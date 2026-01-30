@@ -1,32 +1,71 @@
 # 🌍 EnviroAudit
+**AI-Powered Environmental Compliance Monitoring Platform**
 
-**AI-Powered Environmental Compliance Monitoring System**
+EnviroAudit is an end-to-end, applied AI system designed to automate environmental compliance monitoring using imagery analysis.
+The project focuses on real-world deployment concerns such as interpretability, cost-free data access, system robustness, and actionable decision outputs rather than standalone model performance.
 
-EnviroAudit is a comprehensive solution currently undergoing active development. It automates environmental compliance monitoring using advanced Artificial Intelligence, combining computer vision for site analysis with a robust backend API and an interactive dashboard.
+It combines computer vision, decision logic, a RESTful backend, and an interactive dashboard to convert raw images and satellite data into explainable compliance risk assessments.
 
-## ✨ Key Features
+## 🎯 Problem Statement
 
--   **Zero-Key Satellite Integration**:
-    -   **Multi-Provider Support**: Uses a smart orchestrator to fetch data from **NASA GIBS** (Real-time), **OpenStreetMap** (Map Tiles), or **Synthetic Generation** (Fallback).
-    -   **No API Keys Required**: Designed for seamless portfolio demonstration without expensive enterprise keys.
-    -   **Change Detection**: Compares imagery over time to detect new construction or environmental changes.
-    
--   **🔍 AI-Powered Analysis**:
-    -   **CLIP & BLIP**: Zero-shot classification and image captioning for deep context.
-    -   **GroundingDINO**: State-of-the-art object detection to identify heavy machinery and construction vehicles.
-    
--   **🚀 RESTful API**: High-performance backend built with **FastAPI**.
--   **📊 Interactive Dashboard**: Professional **Streamlit** interface for data visualization, manual image uploads, and report generation.
--   **🛡️ Risk Assessment**: Automated compliance scoring and risk level categorization (Low, Medium, High, Critical).
--   **💾 Database Integration**: Persistent storage of analysis history using SQLAlchemy.
+Environmental compliance monitoring is typically:
+- **Manual and time-consuming**
+- **Dependent on costly satellite APIs**
+- **Difficult to scale and audit**
+
+EnviroAudit addresses this by:
+- **Automating visual site analysis using AI**
+- **Translating model outputs into clear risk levels and inspection recommendations**
+- **Providing a system that is demo-friendly, extensible, and interpretable**
+
+## ✨ Core Capabilities
+
+### 🛰️ Zero-Key Satellite Imagery Pipeline
+- **Multi-Provider Orchestration**:
+  - **NASA GIBS** (near real-time satellite imagery)
+  - **OpenStreetMap** (map tiles)
+  - **Synthetic imagery fallback** for resilience
+- **No API keys required**, enabling cost-free demos and portfolio deployment
+- **Temporal change detection** to identify new construction or environmental changes over time
+
+### 🔍 AI-Driven Visual Analysis
+- **Zero-shot image understanding** using **CLIP** for flexible classification
+- **Image captioning** via **BLIP** to generate human-readable scene descriptions
+- **Object detection** with **GroundingDINO** to identify construction vehicles and heavy machinery
+- Designed to **gracefully degrade** when advanced models are unavailable
+
+### ⚠️ Compliance Risk Assessment
+- Converts raw ML outputs into **actionable compliance signals**
+- Rule-based reasoning layer maps detections to:
+  - **Risk levels**: Low, Medium, High, Critical
+  - **Inspection recommendations**
+- Emphasis on **interpretability and decision support**, not black-box predictions
+
+## 🧩 System Architecture
+- **FastAPI backend** serving analysis, location-based monitoring, and change detection
+- **Persistent storage** of analysis results for auditability
+- **Streamlit dashboard** for visualization, manual uploads, and report generation
+- **Modular pipeline design** for easy extension to video feeds, drones, or GIS systems
 
 ## 🛠️ Technology Stack
 
--   **Backend**: Python, FastAPI, Uvicorn
--   **Frontend**: Streamlit, Plotly
--   **AI/ML**: PyTorch, Hugging Face Transformers, Pillow, GroundingDINO
--   **Satellite**: NASA GIBS, OpenStreetMap, Folium
--   **Database**: SQLAlchemy, SQLite (default) / PostgreSQL compatible
+### Backend
+- Python, FastAPI, Uvicorn
+- SQLAlchemy (SQLite by default, PostgreSQL-ready)
+
+### AI / ML
+- PyTorch
+- Hugging Face Transformers (CLIP, BLIP)
+- GroundingDINO (object detection)
+
+### Frontend
+- Streamlit
+- Plotly
+
+### Geospatial
+- NASA GIBS
+- OpenStreetMap
+- Folium
 
 ## 🚀 Installation & Setup
 
