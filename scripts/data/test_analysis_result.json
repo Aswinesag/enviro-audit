@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "source": "test",
+    "location": {
+      "latitude": 40.7128,
+      "longitude": -74.006
+    },
+    "project_id": "test-001"
+  },
+  "image_info": {
+    "original_size": [
+      342,
+      512
+    ],
+    "processed_size": [
+      342,
+      512
+    ],
+    "format": null
+  },
+  "classification": {
+    "predictions": [
+      {
+        "label": "mining or quarry operation",
+        "score": 0.5688275694847107,
+        "confidence": "56.9%"
+      },
+      {
+        "label": "building construction",
+        "score": 0.2763359546661377,
+        "confidence": "27.6%"
+      },
+      {
+        "label": "construction site with vehicles",
+        "score": 0.04028069227933884,
+        "confidence": "4.0%"
+      }
+    ],
+    "is_construction_activity": true,
+    "primary_label": "mining or quarry operation",
+    "primary_confidence": "56.9%",
+    "average_confidence": "42.3%",
+    "analysis": "Mining operation detected. Significant environmental monitoring required."
+  },
+  "caption": {
+    "basic_caption": "a man sitting at a desk with a computer",
+    "enhanced_caption": "a man sitting at a desk with a computer",
+    "has_construction_terms": false
+  },
+  "compliance": {
+    "risk_level": "CRITICAL",
+    "recommended_action": "IMMEDIATE_ACTION",
+    "confidence": "medium",
+    "indicators": {
+      "construction_activity_detected": true,
+      "construction_terms_in_caption": false,
+      "primary_activity": "mining or quarry operation"
+    }
+  },
+  "report": {
+    "text": "ENVIRONMENTAL COMPLIANCE REPORT\n        ==================================================\n        \n        ANALYSIS SUMMARY:\n        - Primary Classification: mining or quarry operation\n        - Confidence: 56.9%\n        - Caption: a man sitting at a desk with a computer\n        \n        COMPLIANCE ASSESSMENT:\n        - Risk Level: CRITICAL\n        - Recommended Action: IMMEDIATE_ACTION\n        - Confidence: MEDIUM\n        \n        INDICATORS:\n        - Construction Activity: YES\n        - Construction Terms in Description: NO\n        \n        ADDITIONAL ANALYSIS:\n        Mining operation detected. Significant environmental monitoring required.\n        \n        RECOMMENDATIONS:\n        1. Immediately dispatch inspection team\n2. Notify regulatory authorities\n3. Issue stop-work order if unauthorized\n4. Schedule follow-up monitoring\n        \n        ==================================================\n        Report generated: 2026-01-29T21:02:13.844401",
+    "html": "\n        <!DOCTYPE html>\n        <html>\n        <head>\n            <title>Environmental Compliance Report</title>\n            <style>\n                body { font-family: Arial, sans-serif; margin: 40px; }\n                .header { background-color: #f0f0f0; padding: 20px; border-radius: 5px; }\n                .risk-critical { color: #ff0000; font-weight: bold; }\n                .risk-high { color: #ff6600; }\n                .risk-medium { color: #ffaa00; }\n                .risk-low { color: #00aa00; }\n                .section { margin: 20px 0; padding: 15px; border-left: 4px solid #007bff; }\n            </style>\n        </head>\n        <body>\n            <div class=\"header\">\n                <h1>Environmental Compliance Report</h1>\n                <p>Generated: 2026-01-29T21:02:13.844435</p>\n            </div>\n            \n            <div class=\"section\">\n                <h2>Analysis Summary</h2>\n                <p><strong>Primary Classification:</strong> mining or quarry operation</p>\n                <p><strong>Confidence:</strong> 56.9%</p>\n                <p><strong>Caption:</strong> a man sitting at a desk with a computer</p>\n            </div>\n            \n            <div class=\"section\">\n                <h2>Compliance Assessment</h2>\n                <p class=\"risk-critical\">\n                    <strong>Risk Level:</strong> CRITICAL\n                </p>\n                <p><strong>Recommended Action:</strong> IMMEDIATE_ACTION</p>\n                <p><strong>Confidence:</strong> MEDIUM</p>\n            </div>\n            \n            <div class=\"section\">\n                <h2>Detailed Analysis</h2>\n                <p>Mining operation detected. Significant environmental monitoring required.</p>\n            </div>\n        </body>\n        </html>\n        ",
+    "summary": {
+      "risk": "CRITICAL",
+      "action": "IMMEDIATE_ACTION",
+      "confidence": "medium"
+    }
+  },
+  "timestamp": "2026-01-29T21:02:13.844450"
+}
