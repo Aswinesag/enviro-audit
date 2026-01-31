@@ -57,12 +57,12 @@ class EnhancedAnalysisPipeline:
         # Step 5: Generate comprehensive report
         report = self._generate_enhanced_report(classification, caption_result, detection_result, compliance, metadata)
         
-        # Prepare result
+        # Prepare result - ensure no PIL Images are included
         result = {
             "metadata": metadata or {},
             "image_info": {
-                "original_size": image.size,
-                "processed_size": processed_image.size,
+                "original_size": list(image.size),  # Convert tuple to list
+                "processed_size": list(processed_image.size),  # Convert tuple to list
                 "format": image.format if hasattr(image, 'format') else 'Unknown'
             },
             "classification": classification,
@@ -75,7 +75,7 @@ class EnhancedAnalysisPipeline:
         }
         
         # Add annotated image if available
-        if detection_result.get("available") and detection_result.get("annotated_image"):
+        if detection_result.get("available") and detection_result.get("annotated_image") is not None:
             result["annotated_image"] = self._image_to_base64(detection_result["annotated_image"])
         
         return result

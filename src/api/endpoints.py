@@ -8,10 +8,22 @@ from PIL import Image
 import io
 import uuid
 import json
+import base64
 import os
 from datetime import datetime
 import logging
 import traceback
+
+# Custom JSON encoder to handle PIL Images
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Image.Image):
+            # Convert PIL Image to base64
+            buffered = io.BytesIO()
+            obj.save(buffered, format="JPEG")
+            img_str = base64.b64encode(buffered.getvalue()).decode()
+            return f"data:image/jpeg;base64,{img_str}"
+        return super().default(obj)
 
 # Import project modules
 from src.pipelines.analysis_pipeline import EnhancedAnalysisPipeline as AnalysisPipeline
@@ -220,7 +232,9 @@ async def analyze_image(
         
         logger.info(f"Analysis completed: {metadata['analysis_id']}")
         
-        return JSONResponse(content=result)
+        # Convert result to JSON string with custom encoder, then parse back
+        result_json = json.dumps(result, cls=CustomJSONEncoder)
+        return JSONResponse(content=json.loads(result_json))
         
     except Image.UnidentifiedImageError:
         raise HTTPException(status_code=400, detail="Cannot identify image file")
@@ -295,7 +309,9 @@ async def analyze_image_url(
         
         logger.info(f"URL analysis completed: {metadata['analysis_id']}")
         
-        return JSONResponse(content=result)
+        # Convert result to JSON string with custom encoder, then parse back
+        result_json = json.dumps(result, cls=CustomJSONEncoder)
+        return JSONResponse(content=json.loads(result_json))
         
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail=f"Failed to download image: {str(e)}")
@@ -629,7 +645,9 @@ async def analyze_enhanced(
                 logger.error(f"Database save failed: {db_error}")
                 result["database_saved"] = False
         
-        return JSONResponse(content=result)
+        # Convert result to JSON string with custom encoder, then parse back
+        result_json = json.dumps(result, cls=CustomJSONEncoder)
+        return JSONResponse(content=json.loads(result_json))
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Enhanced analysis failed: {str(e)}")
@@ -668,7 +686,9 @@ async def analyze_location(
                 logger.error(f"Database save failed: {db_error}")
                 result["database_saved"] = False
         
-        return JSONResponse(content=result)
+        # Convert result to JSON string with custom encoder, then parse back
+        result_json = json.dumps(result, cls=CustomJSONEncoder)
+        return JSONResponse(content=json.loads(result_json))
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Location analysis failed: {str(e)}")
@@ -707,7 +727,9 @@ async def compare_location(
                 logger.error(f"Database save failed: {db_error}")
                 result["database_saved"] = False
         
-        return JSONResponse(content=result)
+        # Convert result to JSON string with custom encoder, then parse back
+        result_json = json.dumps(result, cls=CustomJSONEncoder)
+        return JSONResponse(content=json.loads(result_json))
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Change detection failed: {str(e)}")
