@@ -8,9 +8,18 @@ data/processed/
 notebooks/.ipynb_checkpoints
 *.ipynb
 models/downloaded/
+
 logs/
 data/uploads/
 data/results/
 data/batches/
 data/satellite_cache/
 debug_traceback.log
+
+# Model weights (too large for GitHub)
+weights/
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+*.pt
