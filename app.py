@@ -11,9 +11,36 @@ from datetime import datetime, timedelta
 import os
 import time
 
-# Page configuration
+IS_HF_SPACE = os.environ.get("SPACE_ID") is not None
 
-API_URL = os.getenv("API_URL", "https://enviroaudit-api.onrender.com")
+# Set cache directories for HF Space
+if IS_HF_SPACE:
+    # Use /tmp for caching (Space has 50GB temp storage)
+    os.environ["TRANSFORMERS_CACHE"] = "/tmp/huggingface_cache"
+    os.environ["TORCH_HOME"] = "/tmp/torch_cache"
+    os.makedirs("/tmp/huggingface_cache", exist_ok=True)
+    os.makedirs("/tmp/torch_cache", exist_ok=True)
+    
+    # Optimize PyTorch for CPU
+    import torch
+    torch.set_num_threads(2)  # Limit to 2 threads
+    torch.set_default_dtype(torch.float32)
+    
+    # Create data directory in /tmp
+    os.makedirs("/tmp/enviroaudit_data", exist_ok=True)
+    DATA_DIR = "/tmp/enviroaudit_data"
+else:
+    DATA_DIR = "data"
+
+# API URL (internal for HF Space, or external)
+if IS_HF_SPACE:
+    # In HF Space, we run API in background, use localhost
+    API_URL = "http://localhost:8000"
+else:
+    API_URL = os.getenv("API_URL", "http://localhost:8000")
+
+
+# Page configuration
 st.set_page_config(
     page_title="EnviroAudit - Environmental Compliance Monitor",
     page_icon="🌍",
@@ -758,15 +785,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-def analyze_image(file):
-    response = requests.post(
-        f"{API_URL}/analyze",
-        files={"file": file},
-        timeout=120
-    )
-    return response.json()
-    
 # Auto-refresh for long operations
 if st.session_state.get('analyzing', False):
     time.sleep(1)
     st.rerun()
+
