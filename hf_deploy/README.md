@@ -1,11 +1,13 @@
 ---
 title: EnviroAudit
 emoji: 🌍
-colorFrom: green
-colorTo: blue
-sdk: docker
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+sdk_version: 1.28.0
+app_file: app.py
 pinned: false
-app_port: 7860
+license: mit
 ---
 
 
