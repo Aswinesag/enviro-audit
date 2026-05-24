@@ -1,13 +1,13 @@
 ---
 title: EnviroAudit
 emoji: 🌍
-colorFrom: green
-colorTo: blue
+colorFrom: blue
+colorTo: green
 sdk: docker
-pinned: false
 app_port: 7860
+pinned: false
+license: mit
 ---
-
 
 # 🌍 EnviroAudit
 **AI-Powered Environmental Compliance Monitoring Platform**
