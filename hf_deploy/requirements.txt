@@ -1,0 +1,50 @@
+# requirements.txt - Complete dependencies
+# Core dependencies
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-dotenv
+
+# AI/ML
+transformers
+torch
+torchvision
+pillow
+
+# GroundingDINO
+# git+https://github.com/IDEA-Research/GroundingDINO.git
+opencv-python
+pycocotools
+
+# Satellite & Geospatial
+sentinelhub
+geopandas
+shapely
+folium
+rasterio
+contextily
+
+# Database
+sqlalchemy
+databases[sqlite]
+
+# Frontend
+streamlit
+plotly
+pandas
+
+# Utilities
+requests
+python-multipart
+numpy
+psutil
+python-dateutil
+httpx
+tenacity
+tqdm
+
+# Development
+pytest
+pytest-asyncio
+black

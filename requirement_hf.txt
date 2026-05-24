@@ -1,0 +1,24 @@
+# Core dependencies
+streamlit
+fastapi
+uvicorn
+
+# AI/ML - CPU version (smaller footprint)
+transformers
+torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
+torchvision==0.16.0 --index-url https://download.pytorch.org/whl/cpu
+
+# Image processing
+pillow
+numpy
+
+# Utilities
+requests
+python-multipart
+python-dotenv
+
+# Database
+sqlalchemy
+
+# Geospatial (optional)
+folium
