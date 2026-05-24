@@ -1,0 +1,13 @@
+# requirements_prod.txt - Minimal dependencies for deployment
+fastapi
+uvicorn[standard]
+transformers
+torch
+torchvision
+pillow
+numpy
+requests
+python-multipart
+sqlalchemy
+psycopg2-binary
+python-dotenv
