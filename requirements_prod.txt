@@ -4,6 +4,9 @@ uvicorn[standard]
 transformers
 opencv-python
 torch
+pydantic
+pydantic-settings
+python-dotenv
 torchvision
 pillow
 numpy
