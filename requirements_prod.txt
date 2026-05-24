@@ -2,7 +2,7 @@
 fastapi
 uvicorn[standard]
 transformers
-cv2
+opencv-python
 torch
 torchvision
 pillow
