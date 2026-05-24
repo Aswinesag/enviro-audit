@@ -1,28 +1,28 @@
-# 1. Use an optimized Python image with build tools
-FROM python:3.10-slim
+# Dockerfile - For Render deployment
+FROM python:3.11-slim
 
-# 2. Install system dependencies for OpenCV and GroundingDINO compilation
+WORKDIR /app
+
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    git \
+    gcc \
+    g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# 3. Set work directory and copy project files
-WORKDIR /app
+# Copy requirements
+COPY requirements_prod.txt .
+RUN pip install --no-cache-dir -r requirements_prod.txt
+
+# Copy application
 COPY . .
 
-# 4. Install dependencies from your requirements.txt
-# This includes fastapi, transformers, torch, and geospatial tools
-RUN pip install --no-cache-dir -r requirements.txt
+# Create cache directory
+RUN mkdir -p /tmp/huggingface_cache
 
-# 5. Build GroundingDINO from source as required for object detection
-RUN pip install --no-build-isolation git+https://github.com/IDEA-Research/GroundingDINO.git
+# Download models during build
+RUN python -c "from transformers import CLIPModel, CLIPProcessor; CLIPModel.from_pretrained('openai/clip-vit-base-patch32', cache_dir='/tmp/huggingface_cache')"
+RUN python -c "from transformers import BlipProcessor, BlipForConditionalGeneration; BlipProcessor.from_pretrained('Salesforce/blip-image-captioning-base', cache_dir='/tmp/huggingface_cache')"
 
-# 6. Expose the Hugging Face default port
-EXPOSE 7860
+EXPOSE 8000
 
-# 7. Start the FastAPI backend (port 8000) and Streamlit (port 7860)
-# This allows the app.py to communicate with localhost:8000
-CMD python main.py & streamlit run app.py --server.port 7860 --server.address 0.0.0.0
+CMD ["python", "main.py"]
