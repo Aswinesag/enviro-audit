@@ -9,16 +9,17 @@ from datetime import datetime
 # Hugging Face Spaces Configuration
 # ============================================
 
-IS_HF_SPACE = os.environ.get("SPACE_ID") is not None
+# Set cache directories
+os.environ["TRANSFORMERS_CACHE"] = "/tmp/huggingface_cache"
+os.environ["TORCH_HOME"] = "/tmp/torch_cache"
 
-if IS_HF_SPACE:
-    os.environ["TRANSFORMERS_CACHE"] = "/tmp/huggingface_cache"
-    os.environ["TORCH_HOME"] = "/tmp/torch_cache"
-    os.makedirs("/tmp/huggingface_cache", exist_ok=True)
-    os.makedirs("/tmp/torch_cache", exist_ok=True)
-    
-    import torch
-    torch.set_num_threads(2)
+# Create directories if they don't exist
+os.makedirs("/tmp/huggingface_cache", exist_ok=True)
+os.makedirs("/tmp/torch_cache", exist_ok=True)
+
+# Optimize for CPU
+import torch
+torch.set_num_threads(2)
 
 # ============================================
 # Load Models with Caching
@@ -40,17 +41,17 @@ def load_models():
     return clip_model, clip_processor, blip_model, blip_processor
 
 # ============================================
-# Page Config
+# Page Configuration
 # ============================================
 
 st.set_page_config(
-    page_title="EnviroAudit",
+    page_title="EnviroAudit - Environmental Compliance",
     page_icon="🌍",
     layout="wide"
 )
 
 st.title("🌍 EnviroAudit")
-st.caption("AI-Powered Environmental Compliance Monitoring")
+st.caption("AI-Powered Environmental Compliance Monitoring | Running on Hugging Face Spaces")
 
 # ============================================
 # Load Models
@@ -58,9 +59,9 @@ st.caption("AI-Powered Environmental Compliance Monitoring")
 
 try:
     clip_model, clip_processor, blip_model, blip_processor = load_models()
-    st.success("✅ Models ready!")
+    st.success("✅ AI Models loaded successfully!")
 except Exception as e:
-    st.error(f"Failed to load models: {e}")
+    st.error(f"❌ Failed to load models: {e}")
     st.stop()
 
 # ============================================
@@ -68,26 +69,32 @@ except Exception as e:
 # ============================================
 
 with st.sidebar:
-    st.header("📋 Settings")
+    st.header("📋 Configuration")
+    
     project_id = st.text_input("Project ID", value=f"PROJ-{datetime.now().strftime('%Y%m%d')}")
     
-    analysis_type = st.radio("Input Method:", ["Upload Image", "Image URL", "Sample"])
-    
-    if st.button("🔄 Clear"):
-        st.session_state.clear()
-        st.rerun()
+    analysis_type = st.radio(
+        "Input Method:",
+        ["Upload Image", "Image URL", "Sample Images"]
+    )
     
     st.markdown("---")
-    st.caption("Powered by Hugging Face Transformers")
+    st.caption(f"Space: {os.environ.get('SPACE_ID', 'Local')}")
+    st.caption("Models: CLIP + BLIP")
+    
+    if st.button("🔄 Clear Results"):
+        st.session_state.clear()
+        st.rerun()
 
 # ============================================
-# Main
+# Main Content
 # ============================================
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("📤 Input")
+    
     image = None
     
     if analysis_type == "Upload Image":
@@ -97,102 +104,147 @@ with col1:
             st.image(image, use_column_width=True)
     
     elif analysis_type == "Image URL":
-        url = st.text_input("Image URL", value="https://images.unsplash.com/photo-1581094794329-c8112a89af12")
-        if st.button("Load") and url:
+        url = st.text_input(
+            "Image URL", 
+            value="https://images.unsplash.com/photo-1581094794329-c8112a89af12"
+        )
+        if st.button("📥 Load Image") and url:
             try:
                 response = requests.get(url, timeout=10)
                 image = Image.open(io.BytesIO(response.content)).convert("RGB")
                 st.image(image, use_column_width=True)
             except Exception as e:
-                st.error(f"Failed: {e}")
+                st.error(f"Failed to load: {e}")
     
-    else:  # Sample
+    else:  # Sample Images
         samples = {
             "🏗️ Construction Site": "https://images.unsplash.com/photo-1581094794329-c8112a89af12",
             "⛏️ Mining Operation": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09",
-            "🌳 Natural Landscape": "https://images.unsplash.com/photo-1501854140801-50d01698950b"
+            "🌳 Natural Landscape": "https://images.unsplash.com/photo-1501854140801-50d01698950b",
+            "🏙️ Urban Development": "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b"
         }
-        choice = st.selectbox("Select sample:", list(samples.keys()))
-        if st.button("Load Sample"):
+        
+        selected = st.selectbox("Choose a sample:", list(samples.keys()))
+        
+        if st.button("📥 Load Sample"):
             try:
-                response = requests.get(samples[choice], timeout=10)
+                response = requests.get(samples[selected], timeout=10)
                 image = Image.open(io.BytesIO(response.content)).convert("RGB")
                 st.image(image, use_column_width=True)
             except Exception as e:
-                st.error(f"Failed: {e}")
+                st.error(f"Failed to load: {e}")
 
 with col2:
-    st.subheader("🔍 Results")
+    st.subheader("🔍 Analysis Results")
     
     if image is not None:
-        if st.button("🚀 Analyze", type="primary", use_container_width=True):
-            with st.spinner("Analyzing... (10-20 seconds)"):
+        if st.button("🚀 Analyze Image", type="primary", use_container_width=True):
+            with st.spinner("🔄 Analyzing image with AI... (10-20 seconds)"):
                 try:
-                    # Resize for speed
+                    # Resize for faster processing
                     img = image.copy()
                     img.thumbnail((512, 512))
                     
-                    # Classification
+                    # ===== Classification with CLIP =====
                     labels = [
                         "construction site with heavy machinery",
-                        "mining or quarry operation",
+                        "mining or quarry operation", 
                         "land clearing or deforestation",
                         "natural landscape with no construction",
-                        "agricultural field"
+                        "agricultural field",
+                        "urban area with buildings",
+                        "water body or river"
                     ]
                     
-                    inputs = clip_processor(text=labels, images=img, return_tensors="pt", padding=True)
+                    inputs = clip_processor(
+                        text=labels, 
+                        images=img, 
+                        return_tensors="pt", 
+                        padding=True
+                    )
                     outputs = clip_model(**inputs)
                     probs = outputs.logits_per_image.softmax(dim=1)[0]
                     
                     best_idx = probs.argmax().item()
                     primary_label = labels[best_idx]
-                    confidence = f"{probs[best_idx].item():.1%}"
+                    confidence = probs[best_idx].item()
                     
-                    # Caption
+                    # ===== Caption with BLIP =====
                     caption_inputs = blip_processor(img, return_tensors="pt")
                     out = blip_model.generate(**caption_inputs, max_length=50)
                     caption = blip_processor.decode(out[0], skip_special_tokens=True)
                     
-                    # Risk
-                    high_risk = ["construction site with heavy machinery", "mining or quarry operation", "land clearing or deforestation"]
-                    if primary_label in high_risk:
-                        risk = "HIGH ⚠️"
+                    # ===== Risk Assessment =====
+                    high_risk_labels = [
+                        "construction site with heavy machinery",
+                        "mining or quarry operation",
+                        "land clearing or deforestation"
+                    ]
+                    
+                    if primary_label in high_risk_labels:
+                        risk_level = "HIGH"
+                        risk_color = "⚠️"
                         action = "Schedule inspection within 48 hours"
+                        recommendation = "Immediate environmental review recommended"
+                    elif primary_label == "urban area with buildings":
+                        risk_level = "MEDIUM"
+                        risk_color = "📋"
+                        action = "Routine monitoring recommended"
+                        recommendation = "Document site conditions for baseline"
                     else:
-                        risk = "LOW ✅"
-                        action = "Routine monitoring only"
+                        risk_level = "LOW"
+                        risk_color = "✅"
+                        action = "No immediate action required"
+                        recommendation = "Continue standard monitoring"
                     
-                    # Display
+                    # ===== Display Results =====
                     st.metric("Primary Classification", primary_label)
-                    st.metric("Confidence", confidence)
-                    st.info(f"📝 **Caption:** {caption}")
+                    st.metric("Confidence", f"{confidence:.1%}")
                     
-                    if risk == "HIGH ⚠️":
-                        st.warning(f"⚠️ **Risk Level: {risk}**\n\n**Action:** {action}")
+                    st.info(f"📝 **Image Description:** {caption}")
+                    
+                    st.subheader("⚠️ Compliance Assessment")
+                    
+                    if risk_level == "HIGH":
+                        st.warning(f"**Risk Level: {risk_level} {risk_color}**")
+                        st.warning(f"**Action:** {action}")
+                        st.warning(f"**Recommendation:** {recommendation}")
+                    elif risk_level == "MEDIUM":
+                        st.info(f"**Risk Level: {risk_level} {risk_color}**")
+                        st.info(f"**Action:** {action}")
+                        st.info(f"**Recommendation:** {recommendation}")
                     else:
-                        st.success(f"✅ **Risk Level: {risk}**\n\n**Action:** {action}")
+                        st.success(f"**Risk Level: {risk_level} {risk_color}**")
+                        st.success(f"**Action:** {action}")
+                        st.success(f"**Recommendation:** {recommendation}")
                     
-                    # Store in session
-                    st.session_state.last_result = {
-                        "label": primary_label,
+                    # ===== Save to session =====
+                    st.session_state.last_analysis = {
+                        "project_id": project_id,
+                        "timestamp": datetime.now().isoformat(),
+                        "primary_label": primary_label,
                         "confidence": confidence,
                         "caption": caption,
-                        "risk": risk,
-                        "timestamp": datetime.now().isoformat()
+                        "risk_level": risk_level,
+                        "action": action
                     }
                     
                 except Exception as e:
-                    st.error(f"Analysis failed: {e}")
+                    st.error(f"Analysis failed: {str(e)}")
     
-    # Show previous result
-    if st.session_state.get("last_result"):
-        with st.expander("📋 Previous Result"):
-            st.json(st.session_state.last_result)
+    # Show previous analysis
+    if st.session_state.get("last_analysis"):
+        with st.expander("📋 Last Analysis Details", expanded=False):
+            st.json(st.session_state.last_analysis)
 
 # ============================================
 # Footer
 # ============================================
 
 st.markdown("---")
-st.caption("EnviroAudit | Hugging Face Transformers (CLIP + BLIP)")
+st.markdown("""
+<div style="text-align: center; color: #666;">
+    <p>🌍 <b>EnviroAudit</b> - AI-Powered Environmental Compliance Monitoring</p>
+    <p>Powered by Hugging Face Transformers (CLIP + BLIP)</p>
+</div>
+""", unsafe_allow_html=True)
