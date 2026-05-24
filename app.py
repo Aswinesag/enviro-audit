@@ -12,6 +12,8 @@ import os
 import time
 
 # Page configuration
+
+API_URL = os.getenv("API_URL", "https://enviroaudit-api.onrender.com")
 st.set_page_config(
     page_title="EnviroAudit - Environmental Compliance Monitor",
     page_icon="🌍",
@@ -756,6 +758,14 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+def analyze_image(file):
+    response = requests.post(
+        f"{API_URL}/analyze",
+        files={"file": file},
+        timeout=120
+    )
+    return response.json()
+    
 # Auto-refresh for long operations
 if st.session_state.get('analyzing', False):
     time.sleep(1)
