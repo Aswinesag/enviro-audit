@@ -8,8 +8,8 @@ font = "sans serif"
 
 [server]
 maxUploadSize = 10
-enableCORS = true
-enableXsrfProtection = true
+enableCORS = false
+enableXsrfProtection = false
 maxMessageSize = 200
 
 [browser]
