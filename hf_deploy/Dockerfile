@@ -1,4 +1,3 @@
-# Dockerfile for Hugging Face Spaces
 FROM python:3.11-slim
 
 # Set environment variables
@@ -9,27 +8,27 @@ ENV TORCH_HOME=/tmp/torch_cache
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies (minimal)
+# Install minimal system utilities + OpenCV dependencies
 RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     gcc \
     g++ \
+    libgl1 \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (for better caching)
+# Copy requirements first (for caching)
 COPY requirements.txt .
-
-# Install Python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Copy application files
 COPY . .
 
-# Create cache directories
-RUN mkdir -p /tmp/huggingface_cache /tmp/torch_cache
+# Ensure caching and data paths exist
+RUN mkdir -p /tmp/huggingface_cache /tmp/torch_cache /tmp/enviroaudit_data
 
 # Expose the port
 EXPOSE 7860
 
-# Run streamlit
-CMD ["streamlit", "run", "app.py", "--server.port=7860", "--server.address=0.0.0.0"]
+# Startup orchestrator
+CMD ["python", "space_startup.py"]

@@ -1,5 +1,0 @@
-# requirements_streamlit.txt
-streamlit
-requests
-Pillow
-python-dotenv

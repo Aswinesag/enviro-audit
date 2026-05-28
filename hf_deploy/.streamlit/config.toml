@@ -1,0 +1,20 @@
+# .streamlit/config.toml
+[theme]
+primaryColor = "#1E3A8A"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+font = "sans serif"
+
+[server]
+maxUploadSize = 10
+enableCORS = true
+enableXsrfProtection = true
+maxMessageSize = 200
+
+[browser]
+gatherUsageStats = false
+
+[runner]
+# Reduce memory usage
+maxCacheSize = 100
